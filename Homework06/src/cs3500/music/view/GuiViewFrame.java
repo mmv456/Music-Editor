@@ -23,12 +23,12 @@ public class GuiViewFrame extends javax.swing.JFrame implements YourViewInterfac
   }
 
   @Override
-  public void initialize(){
+  public void initialize() {
     this.setVisible(true);
   }
 
   @Override
-  public Dimension getPreferredSize(){
+  public Dimension getPreferredSize() {
     return new Dimension(100, 100);
   }
 

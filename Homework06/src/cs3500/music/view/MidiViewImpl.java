@@ -50,13 +50,13 @@ public class MidiViewImpl implements YourViewInterfaceHere {
     MidiMessage stop = new ShortMessage(ShortMessage.NOTE_OFF, 0, 60, 64);
     this.receiver.send(start, -1);
     this.receiver.send(stop, this.synth.getMicrosecondPosition() + 200000);
-    
-    /* 
+
+    /*
     The receiver does not "block", i.e. this method
-    immediately moves to the next line and closes the 
-    receiver without waiting for the synthesizer to 
-    finish playing. 
-    
+    immediately moves to the next line and closes the
+    receiver without waiting for the synthesizer to
+    finish playing.
+
     You can make the program artificially "wait" using
     Thread.sleep. A better solution will be forthcoming
     in the subsequent assignments.

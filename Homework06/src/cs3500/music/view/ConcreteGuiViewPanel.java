@@ -9,7 +9,7 @@ import java.util.Objects;
 import javax.swing.*;
 
 /**
- * A dummy view that simply draws a string 
+ * A dummy view that simply draws a string
  */
 public class ConcreteGuiViewPanel extends JPanel {
 

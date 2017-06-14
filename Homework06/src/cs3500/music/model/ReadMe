@@ -1,0 +1,39 @@
+CompositionBuilder<T>:
+    Interface that is used to build compositions. This is used in the MusicBuilder class. Contains
+    certain methods that allow the user to adjust certain characteristics of the music piece.
+
+IObservableMusicMakerModel<T>:
+    Model classes implementing this interface contain methods that allow the user to view but not
+    edit information from the piece of music stored in the implemented model.
+
+IMusicMakerModel<T>:
+    This is the interface for the music editor that extends IObservableMusicMakerModel<T>. It
+    contains methods that allow the user to pass information to any relevant classes such as
+    controllers that will be created in the near future. It also has methods that allow the user to
+    add, remove, or edit notes in the music piece.
+
+MusicMakerModel:
+    This is an implementation of the IMusicMakerModel<T> interface abstracted over the MusicNote
+    type. It stores the information related to the score of the music piece it represents in a 2D
+    ArrayList of MusicNotes. Additionally, the tempo (in microseconds per beat) of the music piece
+    is stored as a field in the class. It also contains an implementation of the CompositionBuilder
+    which allows for easier creation of complex music pieces.
+
+MusicBuilder:
+    Class that implements CompositionBuilder<T> and takes in a MusicMakerModel as the parameter.
+    Given a specific input (form the MusicMakerModel), it uses methods such as build, setTempo, and
+    addNote to create a music piece.
+
+MusicNote:
+    This is a data type which represents a standard musical note on a western scale. It contains
+    fields which pertain to the pitch, octave, duration, volume. It also has a field which denotes
+    the note as the beginning of a note being played or a note being sustained which already
+    already started on a previous beat. The instrument the note is supposedly being played in is
+    also stored in an integer value for ease of use with the Java MIDI library channels. Its two
+    constructors are for general use and for use with MIDI, respectively. All of the public methods
+    in this class are used for access to the class's fields.
+
+Pitch:
+    This is an enumeration which represents the 12 pitches that a given note can be in a standard
+    octave range.
+
