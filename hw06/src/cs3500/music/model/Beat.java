@@ -18,7 +18,6 @@ public class Beat {
    * @return if this beat is a head
    */
   public boolean isHead() {
-
     return this.isHead;
   }
 

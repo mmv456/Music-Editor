@@ -108,12 +108,12 @@ public class MidiGuiView implements IMusicEditorGuiView, IMusicEditorMidiView {
   }
 
   @Override
-  public int getCurrBeat() {
-    return midi.getCurrBeat();
+  public int getCurrentBeat() {
+    return midi.getCurrentBeat();
   }
 
   /**
-   * Will the view repeat at the current beat?
+   * Checks if the view will repeat at the current beat
    */
   @Override
   public void willRepeat() {

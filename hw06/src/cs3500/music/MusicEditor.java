@@ -4,6 +4,9 @@ import cs3500.music.model.IMusicEditorModel;
 import cs3500.music.model.MusicEditorCreater;
 import cs3500.music.model.MusicEditorCreater.Builder;
 import cs3500.music.util.MusicReader;
+import cs3500.music.view.ControllerTemp;
+import cs3500.music.view.IMusicEditorGuiView;
+import cs3500.music.view.IMusicEditorMidiView;
 
 import cs3500.music.view.IMusicEditorView;
 import cs3500.music.view.MidiGuiView;
@@ -30,20 +33,19 @@ public class MusicEditor {
     IMusicEditorModel model = MusicReader.parseFile(new FileReader(args[0]), builder);
     IMusicEditorView view;
     switch (args[1]) {
-      case "text":
-        view = new SheetMusicTextView();
+      case "text": view = new SheetMusicTextView();
         break;
-      case "gui":
-        view = new SheetMusicView();
+      case "gui": view = new SheetMusicView();
         break;
-      case "midi":
-        view = new MidiView();
+      case "midi": view = new MidiView();
         break;
-      case "midigui":
-        view = new MidiGuiView();
+      case "midigui": view = new MidiGuiView();
         break;
       default:
         throw new IllegalArgumentException("Not a valid view");
     }
+
+    ControllerTemp controller = new ControllerTemp(model, view);
+    controller.startEditor(4);
   }
 }

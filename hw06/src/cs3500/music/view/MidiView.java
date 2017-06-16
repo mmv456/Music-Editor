@@ -130,7 +130,7 @@ public class MidiView implements IMusicEditorMidiView {
    * Gets the current playing beat.
    * @return current playing beat.
    */
-  public int getCurrBeat() {
+  public int getCurrentBeat() {
     return (int) sequencer.getTickPosition();
   }
 
@@ -252,7 +252,7 @@ public class MidiView implements IMusicEditorMidiView {
   public void willRepeat() {
     for (int i = 0; i < repetitions.size(); i++) {
       Repeats r = repetitions.get(i);
-      if (r.getEnd() == getCurrBeat() && !r.played) {
+      if (r.getEnd() == getCurrentBeat() && !r.played) {
         r.togglePlayed();
         long moveTo;
         if (r.skip) {
@@ -269,7 +269,7 @@ public class MidiView implements IMusicEditorMidiView {
 
     for (int i = 0; i < skips.size(); i++) {
       Segment skip = skips.get(i);
-      if (skip.start == getCurrBeat()) {
+      if (skip.start == getCurrentBeat()) {
         long moveTo = 125000 * skip.end;
         sequencer.setMicrosecondPosition(moveTo);
         sequencer.setTempoInBPM(this.tempo);

@@ -14,7 +14,7 @@ public interface IMusicEditorMidiView extends IMusicEditorView {
    * Gets the current playing beat.
    * @return current playing beat.
    */
-  int getCurrBeat();
+  int getCurrentBeat();
 
   /**
    * Will the view repeat at the current beat?

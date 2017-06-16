@@ -1,10 +1,15 @@
 package cs3500.music.model;
 
+import cs3500.music.model.MusicEditorCreater;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import cs3500.music.model.IMusicEditorModel;
+import cs3500.music.model.MusicEditorCreater;
+import cs3500.music.model.Note;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.fail;
