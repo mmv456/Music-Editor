@@ -106,7 +106,8 @@ class NoteColumn {
 
     this.notes.remove(editNote);
     updateTrack();
-    editNote.octave = editOctave;model.addNote(editNote);
+    editNote.octave = editOctave;
+    model.addNote(editNote);
   }
 
   /**

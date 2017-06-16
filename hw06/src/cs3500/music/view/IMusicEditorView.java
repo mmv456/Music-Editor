@@ -10,7 +10,7 @@ import cs3500.music.model.Note;
 import cs3500.music.model.Repeats;
 
 /**
- * Renders a representation of the music editor's data.
+ * Renders a representation of the Music Editor's data.
  */
 public interface IMusicEditorView {
 

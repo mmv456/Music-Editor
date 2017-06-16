@@ -150,7 +150,7 @@ public interface IMusicEditorModel {
   List<String> getHeadings();
 
   /**
-   * Gets the repetitions of the song
+   * Gets the repetitions of the song.
    * @return list of repetitions in the song
    */
   List<Repeats> getRepetitions();

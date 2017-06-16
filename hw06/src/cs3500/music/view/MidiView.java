@@ -25,17 +25,13 @@ import cs3500.music.model.Repeats;
 import cs3500.music.model.Segment;
 
 /**
- * Midi view implementation. Using a sequencer
+ * Midi view implementation using a sequencer.
  */
 public class MidiView implements IMusicEditorMidiView {
 
   private Sequencer sequencer;
-  private Sequence song;
-  private HashMap<Integer, Track> tracks;
-  private HashMap<Integer, Integer> channels;
+
   private Synthesizer synth;
-  private Receiver receiver;
-  private Transmitter transmitter;
   private float tempo;
   private boolean isPlaying;
   private long movingTime;
@@ -79,18 +75,20 @@ public class MidiView implements IMusicEditorMidiView {
     reloadView();
     this.repetitions = repeats;
     try {
+      Sequence song;
       song = new Sequence(Sequence.PPQ, 4);
       sequencer.setSequence(song);
     } catch (InvalidMidiDataException e) {
       e.printStackTrace();
     }
-    tracks = new HashMap();
-    channels = new HashMap();
+    HashMap<Integer, Track> tracks = new HashMap();
+    HashMap<Integer, Integer> channels = new HashMap();
 
     for (Note note : notes) {
       ShortMessage on = new ShortMessage();
       ShortMessage off = new ShortMessage();
       ShortMessage instChange = new ShortMessage();
+      Sequence song = null;
       try {
         if (!tracks.containsKey(note.getInstrument())) {
           // Create a new track
@@ -194,8 +192,8 @@ public class MidiView implements IMusicEditorMidiView {
     try {
       sequencer = MidiSystem.getSequencer();
       synth = MidiSystem.getSynthesizer();
-      receiver = synth.getReceiver();
-      transmitter = sequencer.getTransmitter();
+      Receiver receiver = synth.getReceiver();
+      Transmitter transmitter = sequencer.getTransmitter();
       transmitter.setReceiver(receiver);
     } catch (MidiUnavailableException e) {
       e.printStackTrace();
@@ -246,7 +244,7 @@ public class MidiView implements IMusicEditorMidiView {
   }
 
   /**
-   * Will the view repeat at the current beat?
+   * Will the view repeat at the current beat?.
    */
   @Override
   public void willRepeat() {

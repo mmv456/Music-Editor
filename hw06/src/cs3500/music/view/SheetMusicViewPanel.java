@@ -43,9 +43,9 @@ public class SheetMusicViewPanel extends JPanel {
         Beat selectBeat = selectBeats.get(j);
         if (selectBeat != null) {
           if (selectBeat.isHead()) {
-            g.setColor(Color.BLACK);
+            g.setColor(new Color(255, 255, 0));
           } else {
-            g.setColor(Color.GREEN);
+            g.setColor(new Color(0, 191, 255));
           }
           g.fillRect(bSize * (i + 2), bSize * (j + 1), bSize, bSize);
         }

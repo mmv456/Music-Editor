@@ -1,17 +1,25 @@
 package cs3500.music.view;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
 
 import cs3500.music.model.Beat;
 import cs3500.music.model.Note;
 import cs3500.music.model.Repeats;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 /**
  * Renders the music editor's data in a piano scroll form.
@@ -21,13 +29,9 @@ public class SheetMusicView extends javax.swing.JFrame implements IMusicEditorGu
   private final SheetMusicViewPanel displayPanel;
   private final JPanel buttonPanel;
   private JScrollPane scrollPane;
-  private KeyListener keyListen;
-  private MouseListener mouseListen;
-  private ActionListener aListen;
   private List<JButton> buttons;
   private JTextField text;
   private boolean isPlayed;
-  private int currBeat;
 
 
   /**
@@ -88,18 +92,19 @@ public class SheetMusicView extends javax.swing.JFrame implements IMusicEditorGu
   public void acceptData(List<List<Beat>> beats, List<Note> notes, List<String> headings,
       int numBeats, int measureLength, List<Repeats> repeats) {
     displayPanel.acceptData(beats, headings, numBeats, measureLength);
-    redraw();}
+    redraw();
+  }
 
   @Override
   public void updateCurrentBeat(int currentBeat) {
-    this.currBeat = currentBeat;
+    int currBeat = currentBeat;
     displayPanel.acceptCurrBeat(currBeat);
 
-    JScrollBar horiz = scrollPane.getHorizontalScrollBar();
+    JScrollBar horizontal = scrollPane.getHorizontalScrollBar();
     int windowWidth = this.getContentPane().getWidth();
 
-    if (displayPanel.getBeatBarXVal() > horiz.getValue() + windowWidth) {
-      horiz.setValue(horiz.getValue() + windowWidth);
+    if (displayPanel.getBeatBarXVal() > horizontal.getValue() + windowWidth) {
+      horizontal.setValue(horizontal.getValue() + windowWidth);
     }
     redraw();
   }
@@ -107,9 +112,9 @@ public class SheetMusicView extends javax.swing.JFrame implements IMusicEditorGu
   @Override
   public void setListeners(ActionListener aListen, KeyListener keyListen,
       MouseListener mouseListen) {
-    this.aListen = aListen;
-    this.keyListen = keyListen;
-    this.mouseListen = mouseListen;
+    ActionListener aListen1 = aListen;
+    KeyListener keyListen1 = keyListen;
+    MouseListener mouseListen1 = mouseListen;
     this.displayPanel.addKeyListener(keyListen);
     this.displayPanel.addMouseListener(mouseListen);
     for (JButton b : this.buttons) {
@@ -119,14 +124,14 @@ public class SheetMusicView extends javax.swing.JFrame implements IMusicEditorGu
 
   @Override
   public void goToStart() {
-    JScrollBar horiz = this.scrollPane.getHorizontalScrollBar();
-    horiz.setValue(0);
+    JScrollBar horizontal = this.scrollPane.getHorizontalScrollBar();
+    horizontal.setValue(0);
   }
 
   @Override
   public void goToEnd() {
-    JScrollBar horiz = this.scrollPane.getHorizontalScrollBar();
-    horiz.setValue(horiz.getMaximum());
+    JScrollBar horizontal = this.scrollPane.getHorizontalScrollBar();
+    horizontal.setValue(horizontal.getMaximum());
   }
 
   @Override

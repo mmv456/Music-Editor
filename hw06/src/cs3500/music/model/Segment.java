@@ -5,7 +5,8 @@ package cs3500.music.model;
  */
 public class Segment {
 
-  public final int start, end;
+  public final int start;
+  public final int end;
 
   /**
    * Constructor.

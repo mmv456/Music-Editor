@@ -9,26 +9,6 @@ import static cs3500.music.model.Pitch.getPitchFromString;
 import static cs3500.music.model.Pitch.getSymbol;
 import static cs3500.music.model.Pitch.getSymbolFromOrdinal;
 
-/* CHANGES IN HOMEWORK 6:
-
-   Most of the changes come from merging the two models and adding accessor methods to preserve the
-   encapsulation of our code.
-
-   - ADDED CombineSim and CombineCon to add proper simultaneous and consecutive song addition to
-   the model
-
-   - ADDED fillcolumns to properly add any columns between the lowest note and highest note
-
-   - CORRECTED update to respect scope of the class, delegated some of the work to the notecolumn
-   class
-
-   - ADDED getters and a setter method to allow most things to stay private in here
-
-   - ADDED a builder for the model to make it compatible for this assignment and to make it easier
-   to make a desired model.
-
-   - ADDED better commenting and documentation :)
- */
 
 /**
  * To represent a music editor with the ability to add, remove, or edit notes. Edits one song at a
@@ -325,7 +305,7 @@ public final class MusicEditorCreater implements IMusicEditorModel {
   }
 
   /**
-   * Gets the repetitions of the song
+   * Gets the repetitions of the song.
    *
    * @return list of repetitions in the song
    */

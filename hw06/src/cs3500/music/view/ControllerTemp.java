@@ -28,7 +28,7 @@ import cs3500.music.view.running.Play;
 
 /**
  * A controller for the music editor designed to take input from the user to do the
- * following actions:
+ * actions below:.
  *
  * <p>
  * - Remove notes
@@ -75,6 +75,11 @@ public class ControllerTemp implements ActionListener, MouseListener {
   }
 
 
+  /**
+   * Starts the editor.
+   *
+   * @param measureLength the length of the measure
+   */
   public void startEditor(int measureLength) {
     model.setMeasureLength(measureLength);
     view.setListeners(this, this.keyListen, this);

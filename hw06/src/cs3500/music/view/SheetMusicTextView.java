@@ -81,7 +81,7 @@ public class SheetMusicTextView implements IMusicEditorView {
   }
 
   /**
-   * Moves right one measure in the view
+   * Moves right one measure in the view.
    */
   @Override
   public void moveRight() {

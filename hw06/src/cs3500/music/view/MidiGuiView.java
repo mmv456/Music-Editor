@@ -113,7 +113,7 @@ public class MidiGuiView implements IMusicEditorGuiView, IMusicEditorMidiView {
   }
 
   /**
-   * Checks if the view will repeat at the current beat
+   * Checks if the view will repeat at the current beat.
    */
   @Override
   public void willRepeat() {

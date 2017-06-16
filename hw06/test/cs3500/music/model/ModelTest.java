@@ -1,6 +1,5 @@
 package cs3500.music.model;
 
-import cs3500.music.model.MusicEditorCreater;
 import org.junit.Test;
 
 import java.util.ArrayList;
