@@ -1,37 +1,33 @@
 package cs3500.music;
 
-import cs3500.music.controller.IMusicEditorController;
-import cs3500.music.controller.MusicEditorController;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 
-import cs3500.music.model.IMusicEditor;
-import cs3500.music.model.MusicEditorModel;
-import cs3500.music.model.Note;
+import cs3500.music.controller.ControllerFactory;
+import cs3500.music.controller.IController;
 
-import cs3500.music.util.CompositionBuilder;
+import cs3500.music.model.MusicEditorModelImpl;
+
 import cs3500.music.util.MusicReader;
 
-import cs3500.music.view.IMusicEditorView;
-import cs3500.music.view.ViewFactory;
-
-import java.io.FileReader;
-import java.io.IOException;
-
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiUnavailableException;
 
 
+/**
+ * Initializes the model and the view by calling the controller.
+ */
 public class MusicEditor {
-
-  public static void main(String[] args)
-      throws IOException, InvalidMidiDataException, MidiUnavailableException {
-
-    IMusicEditorView view = ViewFactory.getView("visual");
-
-    CompositionBuilder<IMusicEditor<Note>> builder = new MusicEditorModel.Builder();
-
-    FileReader file = new FileReader("zoot-lw.txt");
-    IMusicEditor<Note> model = MusicReader.parseFile(file, builder);
-    IMusicEditorController controller = new MusicEditorController(model, view);
-    controller.go();
+  /**
+   * Initializes the Model and view.
+   */
+  public static void main(String[] args) {
+    try {
+      MusicEditorModelImpl model =
+          MusicReader.parseFile(new FileReader(args[0]), new MusicEditorModelImpl.Builder());
+      ControllerFactory consoleFactory = new ControllerFactory(model);
+      IController controller = consoleFactory.createController(args[1]);
+      controller.run();
+    } catch (FileNotFoundException fn) {
+      fn.printStackTrace();
+    }
   }
 }

@@ -1,131 +1,144 @@
 package cs3500.music.view;
 
-import java.awt.*;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
-import java.util.*;
-import java.util.List;
+import java.awt.GridLayout;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.event.MouseListener;
 
-import javax.imageio.plugins.jpeg.JPEGHuffmanTable;
-import javax.sound.midi.InvalidMidiDataException;
-import javax.swing.*;
+import java.util.ArrayList;
 
-import cs3500.music.model.IMusicEditor;
-import cs3500.music.model.MusicEditorModel;
-import cs3500.music.model.IMusicEditor;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.JScrollBar;
+
 import cs3500.music.model.Note;
+import cs3500.music.model.ReadOnlyMusicEditorModel;
+
+
 
 /**
- * A skeleton Frame (i.e., a window) in Swing
+ * A skeleton Frame (i.e., a window) in Swing.
  */
-public class GuiViewFrame extends javax.swing.JFrame implements IMusicEditorView<Note> {
+public class GuiViewFrame extends JFrame implements IView {
 
-  private final JPanel musicEditorPanel;
-  private final ScorePanel scorePanel; // You may want to refine this to a subtype of JPanel
-  private final PianoPanel pianoPanel;
-  private IMusicEditor model;
+  private final JPanel gui;
+  private ConcreteGuiViewPanel concrete;
+  private JScrollPane scrollPane;
+
 
 
   /**
-   * Creates new GuiView
+   * Creates new GuiView.
    */
-  public GuiViewFrame() {
-    super();
+  public GuiViewFrame(ReadOnlyMusicEditorModel model) {
+    ArrayList<Integer> fake = new ArrayList();
+    fake.add(1);
+    fake.add(4);
+    fake.add(20);
+    JPanel piano;
+    this.concrete = new ConcreteGuiViewPanel(model);
+    piano = new PianoGuiView(concrete);
+    this.gui = concrete;
+    scrollPane = new JScrollPane(gui, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
+    this.setResizable(true);
+
+    this.setLayout(new GridLayout(2, 1));
+    this.add(scrollPane);
+    this.add(piano);
     this.setTitle("Music Editor");
-
-    this.musicEditorPanel = new JPanel();
-    this.musicEditorPanel.setLayout(new BoxLayout(this.musicEditorPanel, BoxLayout.Y_AXIS));
-
-    this.scorePanel = new ScorePanel();
-    this.pianoPanel = new PianoPanel();
-    scorePanel.setPreferredSize(scorePanel.getPreferredSize());
-    pianoPanel.setPreferredSize(new Dimension(1500,1200));
-    this.setSize(1600, 2000);
-    JScrollPane scrollFrame = new JScrollPane(scorePanel);
-
-    this.musicEditorPanel.add(scrollFrame);
-    this.musicEditorPanel.add(pianoPanel);
-
-    this.setContentPane(this.musicEditorPanel);
-
     this.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-//    this.pack();
+    this.pack();
+    this.setFocusable(true);
+    this.requestFocus();
+    scrollPane.getHorizontalScrollBar().setUnitIncrement(20);
+    scrollPane.getVerticalScrollBar().setUnitIncrement(20);
   }
 
-
-  @Override
-  public void makeVisible() {
+  /**
+   * Sets the visible to true.
+   */
+  public void initialize() {
     this.setVisible(true);
   }
 
-  @Override
-  public void playNote(List<List<List<Integer>>> info, long tempo) throws InvalidMidiDataException {
-
-  }
-
-
-  @Override
-  public void setListener(ActionListener action, KeyListener key) {
-    this.addKeyListener(key);
-    this.scorePanel.addKeyListener(key);
-    this.pianoPanel.addKeyListener(key);
-  }
-
-//  @Override
-//  public void resetFocus() {
-//    this.setFocusable(true);
-//    this.requestFocus();
-//  }
-
-  @Override
-  public void updateCurrentBeat(int beat) {
-    this.scorePanel.updateCurrentBeat(beat);
-    this.pianoPanel.updateCurrentBeat(beat);
-  }
-
-  @Override
-  public void showErrorMessage() {
-
-  }
-
-  @Override
-  public void refresh() {
-
-  }
-
-  @Override
-  public void setNoteRange(List noteRange) {
-    this.scorePanel.setNoteRange(noteRange);
-    this.pianoPanel.setNoteRange(noteRange);
-  }
-
-  @Override
-  public void setDuration(int duration) {
-    this.scorePanel.setDuration(duration);
-    this.pianoPanel.setDuration(duration);
-  }
-
-  @Override
-  public void setNoteMap(Map<Note, List<String>> notes) {
-    this.scorePanel.setNoteMap(notes);
-  }
-
-  @Override
-  public void update(IMusicEditor model) {
-    this.model = model;
-  }
-
-
-  @Override
-  public void setCombineNoteMap(Map <Integer, List<String>> notes) {
-    this.pianoPanel.setCombineNoteMap(notes);
-    this.scorePanel.setCombineNoteMap(notes);
-  }
-
+  /**
+   * gets the preferred size.
+   */
   @Override
   public Dimension getPreferredSize() {
-    return new Dimension(100, 100);
+    return new Dimension(950, 680);
   }
 
+  /**
+   * renders the gui.
+   */
+  public void render() {
+    initialize();
+    gui.repaint();
+  }
 
+  /**
+   * updates the scroll.
+   *
+   * @param location the current location.
+   */
+  public void autoScroll(int location) {
+    JScrollBar horizontal = scrollPane.getHorizontalScrollBar();
+    horizontal.setValue(location);
+  }
+
+  /**
+   * Gets the Note at the current Mouse location.
+   *
+   * @param mouse the Mouse location.
+   * @return the note at the current mouse location.
+   */
+  public Note currentNoteAtPoint(Point mouse) {
+    if (redLineBeat() % 20 == 0) {
+      autoScroll(concrete.getRedLineLocation() - 45);
+    }
+    return concrete.currentNoteAtPoint(mouse);
+  }
+
+  /**
+   * adds a mouse listener to this gui.
+   */
+  @Override
+  public void addMouseListener(MouseListener mouse) {
+    concrete.addMouseListener(mouse);
+  }
+
+  /**
+   * updates the red line.
+   *
+   * @param num how much to update the red line by.
+   */
+  public void updateRed(int num) {
+    concrete.updateRedLine(num);
+    if (redLineBeat() % 20 == 0) {
+      autoScroll(concrete.getRedLineLocation() - 45);
+    }
+    repaint();
+  }
+
+  /**
+   * Updates the scroll.
+   */
+  public void updateScroll() {
+    if (redLineBeat() % 20 == 0) {
+      autoScroll(concrete.getRedLineLocation() - 45);
+    }
+  }
+
+  /**
+   * gets the beat the red line is at.
+   *
+   * @return the beat the red line is at.
+   */
+  public int redLineBeat() {
+    return concrete.getRedLineBeat();
+  }
 }

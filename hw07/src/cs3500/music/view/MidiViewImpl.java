@@ -1,129 +1,169 @@
 package cs3500.music.view;
 
-import java.awt.event.ActionListener;
-import java.awt.event.KeyListener;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
-import javax.sound.midi.*;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiChannel;
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.MidiSystem;
+import javax.sound.midi.MidiUnavailableException;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.ShortMessage;
+import javax.sound.midi.Synthesizer;
 
-import cs3500.music.model.IMusicEditor;
-import cs3500.music.model.MusicEditorModel;
 import cs3500.music.model.Note;
+import cs3500.music.model.ReadOnlyMusicEditorModel;
+
+
+
 
 /**
- * A skeleton for MIDI playback
+ * Class for the Midi.
+ * Used to create music from notes.
  */
-public class MidiViewImpl implements IMusicEditorView<Note> {
-  private final Synthesizer synth;
-  private final Receiver receiver;
-  private IMusicEditor model;
+public class MidiViewImpl implements IView {
 
-  public MidiViewImpl() throws MidiUnavailableException {
-    this.synth = MidiSystem.getSynthesizer();
-    this.receiver = synth.getReceiver();
-    this.synth.open();
+  private final Synthesizer synthesizer;
+  private final Receiver receiver;
+  private ReadOnlyMusicEditorModel model;
+
+  /**
+   * Constructor for the Midi
+   *
+   * @param song the given ReadOnly model.
+   */
+  public MidiViewImpl(ReadOnlyMusicEditorModel song) {
+    Objects.requireNonNull(song);
+    this.model = song;
+    Synthesizer tempS;
+    Receiver tempR;
+    try {
+      tempS = MidiSystem.getSynthesizer();
+      tempR = tempS.getReceiver();
+      tempS.open();
+    } catch (MidiUnavailableException e) {
+      tempS = null;
+      tempR = null;
+      e.printStackTrace();
+    }
+    this.synthesizer = tempS;
+    this.receiver = tempR;
   }
 
+  /**
+   * Used for the mock.
+   *
+   * @param model A model.
+   * @param synth A Synthesizer.
+   */
+  public MidiViewImpl(ReadOnlyMusicEditorModel model, Synthesizer synth) {
+    Objects.requireNonNull(model);
+    Objects.requireNonNull(synth);
+    this.model = model;
+    Synthesizer currentSynthesizer;
+    Receiver currentReceiver;
+    try {
+      currentSynthesizer = synth;
+      currentReceiver = currentSynthesizer.getReceiver();
+    } catch (MidiUnavailableException e) {
+      currentSynthesizer = null;
+      currentReceiver = null;
+      e.printStackTrace();
+    }
+    this.synthesizer = currentSynthesizer;
+    this.receiver = currentReceiver;
+  }
 
   /**
    * Relevant classes and methods from the javax.sound.midi library:
+   *
    * <ul>
-   *  <li>{@link MidiSystem#getSynthesizer()}</li>
-   *  <li>{@link Synthesizer}
-   *    <ul>
-   *      <li>{@link Synthesizer#open()}</li>
-   *      <li>{@link Synthesizer#getReceiver()}</li>
-   *      <li>{@link Synthesizer#getChannels()}</li>
-   *    </ul>
-   *  </li>
-   *  <li>{@link Receiver}
-   *    <ul>
-   *      <li>{@link Receiver#send(MidiMessage, long)}</li>
-   *      <li>{@link Receiver#close()}</li>
-   *    </ul>
-   *  </li>
-   *  <li>{@link MidiMessage}</li>
-   *  <li>{@link ShortMessage}</li>
-   *  <li>{@link MidiChannel}
-   *    <ul>
-   *      <li>{@link MidiChannel#getProgram()}</li>
-   *      <li>{@link MidiChannel#programChange(int)}</li>
-   *    </ul>
-   *  </li>
+   *
+   * <li>{@link MidiSystem#getSynthesizer()}</li>
+   *
+   * <li>
+   * {@link Synthesizer}
+   *
+   * <ul>
+   *
+   * <li>{@link Synthesizer#open()}</li>
+   *
+   * <li>{@link Synthesizer#getReceiver()}</li>
+   *
+   * <li>{@link Synthesizer#getChannels()}</li>
+   *
    * </ul>
-   * @see <a href="https://en.wikipedia.org/wiki/General_MIDI">
-   *   https://en.wikipedia.org/wiki/General_MIDI
-   *   </a>
+   *
+   * </li>
+   *
+   * <li>
+   * {@link Receiver}
+   *
+   * <ul>
+   *
+   * <li>{@link Receiver#send(MidiMessage, long)}</li>
+   *
+   * <li>{@link Receiver#close()}</li>
+   *
+   * </ul>
+   *
+   * </li>
+   *
+   * <li>{@link MidiMessage}</li>
+   *
+   * <li>{@link ShortMessage}</li>
+   *
+   * <li>
+   * {@link MidiChannel}
+   *
+   * <ul>
+   *
+   * <li>{@link MidiChannel#getProgram()}</li>
+   *
+   * <li>{@link MidiChannel#programChange(int)}</li>
+   *
+   * </ul>
+   *
+   * </li>
+   *
+   * </ul>
+   *
+   * @see <a href="https://en.wikipedia.org/wiki/General_MIDI"> https://en.wikipedia.org/wiki/General_MIDI
+   * </a>
    */
-
-
-  @Override
-  public void makeVisible() throws InvalidMidiDataException {
-    this.playNote(this.model.getMidiInfo(), this.model.getTempo());
-  }
-
-  @Override
-  public void playNote(List<List<List<Integer>>> info, long tempo) throws InvalidMidiDataException {
-    for (int beat = 0; beat < info.size(); beat++) {
-      for (List<Integer> l: info.get(beat)) {
-        this.receiver.send(new ShortMessage(ShortMessage.PROGRAM_CHANGE, l.get(1), l.get(1), l.get(1)), -1);
-        this.receiver.send(new ShortMessage(ShortMessage.NOTE_ON, l.get(1), l.get(2), l.get(3)), this.synth.getMicrosecondPosition());
-        this.receiver.send(new ShortMessage(ShortMessage.NOTE_OFF, l.get(1), l.get(2), l.get(3)), this.synth.getMicrosecondPosition() + l.get(4) * tempo);
-      }
+  public void playNote(Note note) {
+    int instrument = note.getInstrument() - 1;
+    int midiValue = note.midiValue();
+    int volume = note.getVolume();
+    int tempo = model.getTempo();
+    try {
+      MidiMessage start = null;
+      MidiMessage stop = null;
       try {
-        Thread.sleep(tempo / 1000);
-      } catch (InterruptedException e) {
+        start = new ShortMessage(ShortMessage.NOTE_ON, instrument, midiValue,
+            volume);
+        stop = new ShortMessage(ShortMessage.NOTE_OFF, instrument, midiValue,
+            volume);
+      } catch (InvalidMidiDataException e) {
         e.printStackTrace();
       }
+      this.receiver.send(start, note.getStart() * tempo);
+      this.receiver.send(stop, (note.last() + 1) * tempo);
+    } catch (NullPointerException c) {
+      c.printStackTrace();
     }
   }
 
-
+  /**
+   * plays the notes at the given beat.
+   */
   @Override
-  public void setNoteRange(List noteRange) {
-
+  public void render() {
+    List<Note> notes = model.getNotesThatStartAt(model.getCurrentBeat());
+    int count = 0;
+    for (int i = 0; i < notes.size(); i++) {
+      playNote(notes.get(i));
+    }
   }
-
-  @Override
-  public void setDuration(int duration) {
-
-  }
-
-  @Override
-  public void update(IMusicEditor model) {
-    this.model = model;
-  }
-
-  @Override
-  public void setCombineNoteMap(Map<Integer, List<String>> notes) {
-
-  }
-
-  @Override
-  public void setNoteMap(Map notes) {
-
-  }
-
-  @Override
-  public void setListener(ActionListener action, KeyListener key) {
-
-  }
-
-  @Override
-  public void updateCurrentBeat(int beat) {
-
-  }
-
-
-  @Override
-  public void showErrorMessage() {
-
-  }
-
-  @Override
-  public void refresh() {
-
-  }
-
 }
